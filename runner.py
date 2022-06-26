@@ -56,7 +56,7 @@ def timer(name):
     yield
     LOGGER.info(f'[{name}] done in {time.time() - t0:.0f} s.')
 
-def init_logger(log_file='/home/ronny/Desktop/code_league/outputs/train.log'):
+def init_logger(log_file='./outputs/train.log'):
     from logging import getLogger, INFO, FileHandler,  Formatter,  StreamHandler
     logger = getLogger(__name__)
     logger.setLevel(INFO)
@@ -154,7 +154,7 @@ def train_loop(folds, fold, args):
     scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=args.factor, patience=args.patience, verbose=True, eps=args.eps)
 
     es = EarlyStopping(
-        patience=args.patience, verbose=True, path=f'/home/ronny/Desktop/code_league/outputs/{args.model_name}_fold{fold}_best.pth'
+        patience=args.patience, verbose=True, path=f'./outputs/{args.model_name}_fold{fold}_best.pth'
     ) 
 
   
@@ -180,13 +180,13 @@ def train_loop(folds, fold, args):
         if score < best_score:
             best_score = score
             LOGGER.info(f'Epoch {epoch+1} - Save Best Score: {best_score:.4f} Model')
-            torch.save({'model': model.state_dict(), 'preds': preds}, f'/home/ronny/Desktop/code_league/outputs/{args.model_name}_fold{fold}_best.pth')
+            torch.save({'model': model.state_dict(), 'preds': preds}, f'./outputs/{args.model_name}_fold{fold}_best.pth')
 
         elif es.early_stop:
             print("early stopping...")
             break
     
-    check_point = torch.load(f'/home/ronny/Desktop/code_league/outputs/{args.model_name}_fold{fold}_best.pth')
+    check_point = torch.load(f'./outputs/{args.model_name}_fold{fold}_best.pth')
     valid_folds.loc[:, preds_cols] = check_point['preds']
     valid_folds['preds'] = check_point['preds'].argmax(1)
 
@@ -228,7 +228,7 @@ def main(args):
             
     LOGGER.info(f"========== CV ==========")
     get_result(oof_df)
-    oof_df.to_csv(f'/home/ronny/Desktop/code_league/outputs/{args.model_name}_{args.optimizer_name}_oof_df.csv', index=False)
+    oof_df.to_csv(f'./outputs/{args.model_name}_{args.optimizer_name}_oof_df.csv', index=False)
 
 
 
@@ -240,13 +240,13 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser("Train Runner")
 
-    parser.add_argument("--train_csv", type = str,    default = '/home/ronny/Desktop/code_league/data/raw/train.csv', help = "path/to/train csv")
-    parser.add_argument("--root_dir" , type = str,    default = '/home/ronny/Desktop/code_league/data/spectrograms/', help = "path/to/spectrograms")
+    parser.add_argument("--train_csv", type = str,    default = './data/raw/train.csv', help = "path/to/train csv")
+    parser.add_argument("--root_dir" , type = str,    default = './data/spectrograms/', help = "path/to/spectrograms")
     parser.add_argument("--debug", action = "store_true", default=False, help = "run in debug mode")
     parser.add_argument("--print_freq", type =int, default=100, help="print frequency")
     parser.add_argument("--num_workers", type =int, default=2, help="number of workers")
     parser.add_argument("--model_name", type =str, default="densenet201", help="model name")
-    parser.add_argument("--family", type =str, default="Densenet201", help="family")
+    parser.add_argument("--family", type =str, default="Densenet201", choices =["Densenet201", "Densenet161", "tf_efficientnet_b4_ns"], help="model family")
     parser.add_argument("--pretrained", action="store_true", default=False, help="use pretrained model flag")
     parser.add_argument("--size", type =tuple, default=(500, 230), help="image size")
     parser.add_argument("--optimizer_name", type =str, default="adamw", help="optimizer name")

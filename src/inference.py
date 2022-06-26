@@ -19,7 +19,7 @@ from scipy.stats.mstats import gmean
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-mapper = joblib.load("/home/ronny/Desktop/code_league/data/label_mapper.joblib")
+mapper = joblib.load("./data/label_mapper.joblib")
 
 
 def inference(model, states, test_loader, device):
@@ -161,15 +161,15 @@ def inference(model, states, test_loader, device):
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser("Inference Runner")
+    parser = argparse.ArgumentParser(description="Inference Runner")
 
-    parser.add_argument("--test_csv", type = str,  default = '/home/ronny/Desktop/code_league/data/raw/test.csv', help = "path/to/test csv")
-    parser.add_argument("--root_dir" , type = str,    default = '/home/ronny/Desktop/code_league/data/spectrograms/', help = "path/to/spectrograms")
+    parser.add_argument("--test_csv", type = str,  default = './data/raw/test.csv', help = "path/to/test csv")
+    parser.add_argument("--root_dir" , type = str,    default = './data/spectrograms/', help = "path/to/spectrograms")
     parser.add_argument("--debug", action = "store_true", default=None, help = "run in debug mode")
     parser.add_argument("--sampling_rate", type =int, default=22050, help="sampling rate")
     parser.add_argument("--num_workers", type =int, default=2, help="number of workers")
     parser.add_argument("--model_name", type =str, default="densenet201", help="model name")
-    parser.add_argument("--family", type =str, default="Densenet201", help="batch size")
+    parser.add_argument("--family", type =str, default="Densenet201", choices =["Densenet201", "Densenet161", "tf_efficientnet_b4_ns"], help="model family")
     parser.add_argument("--size", type =tuple, default=(500, 230), help="image size")
     parser.add_argument("--batch_size", type = int, default=32, help = "batch size")
     parser.add_argument("--duration", type =int, default=30, help="duration")
