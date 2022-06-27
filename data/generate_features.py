@@ -6,7 +6,7 @@ import IPython.display as ipd
 from tqdm.auto import tqdm
 
 
-from feature_extractors import audio_tree_feature_extractor,audio_to_image_extractor
+from feature_extractors import audio_to_image_extractor
 
 class Config:
     root_dir = "./raw"
@@ -45,42 +45,12 @@ def generate_specs(df):
     else:
         continue
 
-def generate_tree_feats(df):
-
-    all_features = {}
-
-    for _, row in df.iterrows():
-
-        fn  = row.filename
-        lab = row.label
-
-        if row.duration == "30sec":
-            hop_length = 128 * 30
-        else:
-            hop_length = 128 * 3
-
-        if fn not in skip_files:
-            feats = audio_tree_feature_extractor(wav_file = fn, hop_length = hop_length)
-        else:
-            continue
-
-        all_features[fn] = feats
-        all_features["label"] = lab
-
-        del feats
-        _ = gc.collect()
-
-    return all_features
-
 
 def main(args):
     print(f"Generating training features ...")
     df = pd.read_csv(args.filename)
     generate_specs(df)
-    generate_tree_feats(df)
-    print("#"*50)
     print("Done!")
-    print("#"*50)
 
         
 
