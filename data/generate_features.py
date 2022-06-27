@@ -9,7 +9,7 @@ from tqdm.auto import tqdm
 from feature_extractors import audio_tree_feature_extractor,audio_to_image_extractor
 
 class Config:
-    root_dir = "/home/ronny/Desktop/code_league/data/raw"
+    root_dir = "./raw"
     sampling_rate = 22050
     duration = 30 # sec
     hop_length = 128*duration # to make time steps 128
@@ -87,7 +87,7 @@ def main(args):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser("Feature Generator")
-    parser.add_argument("--filename", type = str, default=f"{CFG.root}/data.csv", help="path/to/csv file")
+    parser.add_argument("--filename", type = str, default=f"{CFG.root}/train.csv.csv", help="path/to/csv file")
 
     args = parser.parse_args()
 

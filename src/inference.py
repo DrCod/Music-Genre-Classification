@@ -83,7 +83,7 @@ def inference(model, states, test_loader, device):
 
     states = [torch.load(f) for f in pretrained_models[f"{args.model_name}"]]
 
-    if args.batch_predict:
+    if args.batch_predict is not None:
 
         test_df = pd.read_csv(args.test_csv)
         test_ds = AudioDataset(df = test_df,  size= (*args.size))
@@ -185,7 +185,7 @@ if __name__ == "__main__":
     parser.add_argument("--bias", type =float, default=0.1, help="bias")
     parser.add_argument("--power", type =float, default=0.2, help="power")
     parser.add_argument("--time_constant", type =float, default=0.4, help="time_constant")
-
+    parser.add_argument("--batch_predict", action="store_true", default=None, help = "flag to predict a batch of files in csv format")
 
     args = parser.parse_args()
 

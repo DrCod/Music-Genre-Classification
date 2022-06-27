@@ -3,51 +3,6 @@ import librosa
 import librosa.display
 
 
-def audio_tree_feature_extractor(root_dir, wav_file, hop_length):
-  """audio_tree_feature_extractor
-  Extracts a dictionary of audio features
-  """
-
-  signal, sr = librosa.load(f"{root_dir}{wav_file}")
-  signal, _ = librosa.effects.trim(signal)
-
-  chroma = librosa.feature.chroma_stft(signal, sr=sr, hop_length=hop_length)
-  mfcc   = librosa.feature.mfcc(signal, sr = sr, n_mfcc=20)
-  tempo, _ = librosa.beat.beat_track(signal)
-
-  spectral_centroid = librosa.feature.spectral_centroid(signal, sr=sr, hop_length=hop_length)[0]
-  spectral_bandwidth = librosa.feature.spectral_bandwidth(signal, sr=sr, hop_length=hop_length)[0]
-  roll_off = librosa.feature.spectral_rolloff(signal, sr=sr,hop_length=hop_length)[0]
-
-  harmony = librosa.effects.harmonic(signal)
-  zero_crossing_rate = librosa.feature.zero_crossing_rate(signal)
-
-  rms = librosa.feature.rms(signal)
-
-  features  = {"chroma_stft_mean" : chroma.mean(),
-              "chroma_stft_var"  : chroma.var(),
-              "tempo" : tempo,
-              "spectra_centroid_mean" : spectral_centroid.mean(),
-              "spectra_centroid_var" : spectral_centroid.var(),
-              "spectra_bandwith_mean" : spectral_bandwidth.mean(),
-              "spectra_bandwoth_var" : spectral_bandwidth.var(),
-              "roll_off_mean" : roll_off.mean(),
-              "roll_off_var" : roll_off.var(),
-              "harmony_mean" : harmony.mean(),
-              "harmony_var" : harmony.var(),
-              "zero_crossing_rate_mean" : zero_crossing_rate.mean(),
-              "zero_crossing_rate_var" : zero_crossing_rate.var(),
-              "rms_mean" : rms.mean(),
-              "rms_var" : rms.var(),
-              }
-
-
-  mfccs_dict = [{f"mfcc{i}_mean": vec.mean() , f"mfcc{i}_var": vec.var()} for i, vec in enumerate(mfcc)]
-
-  for kv in mfccs_dict:
-    features.update(kv)
-
-  return features
 
 
 def audio_to_image_extractor(root_dir ,file_name,n_mels,hop_length,n_fft,fmax
