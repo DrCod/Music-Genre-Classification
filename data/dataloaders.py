@@ -6,7 +6,7 @@ import joblib
 import numpy as np
 
 
-mapper = joblib.load(f"/home/ronny/Desktop/code_league/data/label_mapper.joblib")
+mapper = joblib.load(f"./data/label_mapper.joblib")
 
 
 class AudioDataset(Dataset):
