@@ -176,7 +176,7 @@ if __name__ == "__main__":
     parser.add_argument("--num_workers", type =int, default=2, help="number of workers")
     parser.add_argument("--model_name", type =str, default="densenet201", help="model name")
     parser.add_argument("--family", type =str, default="Densenet201", choices =["Densenet201", "Densenet161", "tf_efficientnet_b4_ns"], help="model family")
-    parser.add_argument("--size", type =tuple, default=(500, 230), help="image size")
+    parser.add_argument("--size", nargs=2, metavar=(500, 230), help="image size")
     parser.add_argument("--batch_size", type = int, default=32, help = "batch size")
     parser.add_argument("--duration", type =int, default=30, help="duration")
     parser.add_argument("--hop_length", type =int, default=0, help="hop length")
