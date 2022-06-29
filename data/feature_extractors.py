@@ -3,8 +3,6 @@ import librosa
 import librosa.display
 
 
-
-
 def audio_to_image_extractor(root_dir ,file_name,n_mels,hop_length,n_fft,fmax
 ,fmin,sampling_rate, gain, bias, eps,power, time_constant,cst=5, top_db=80.):
 

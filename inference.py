@@ -44,8 +44,9 @@ def inference(model, states, test_loader, device):
 
   def audio_to_image(file_name,n_mels,hop_length,n_fft,fmax,fmin,sampling_rate, gain, bias, eps,power, time_constant,cst=5, top_db=80.):
 
+  
     '''audio_to_image
-    Convert audio to image
+    Audio to image coverter
     '''
 
     row_sound, sr = librosa.load(f"{file_name}",sr= sampling_rate)
@@ -85,11 +86,11 @@ def inference(model, states, test_loader, device):
 
     if args.batch_predict is not None:
 
-        test_df = pd.read_csv(args.test_csv)
-        test_ds = AudioDataset(df = test_df,  size= (*args.size))
+        test_df = pd.read_csv(args.test_path)
+        test_ds = AudioDataset(df = test_df,  size= args.size)
         testloader = DataLoader(test_ds, batch_size=args.batch_size, shuffle=False, num_workers=args.num_workers, pin_memory=True, drop_last=False)
 
-        model = AudioModel(arch_name = args.model_name,pretrained=args.pretrained, Family =args.family)
+        model = AudioModel(arch_name = args.model_name, pretrained=args.pretrained, Family =args.family)
 
         predictions = inference(model, states, testloader, device)
 
@@ -101,9 +102,9 @@ def inference(model, states, test_loader, device):
         predictions_df["genre"] = predictions_df["label"].map(mapper)
         predictions_df["genre"] = predictions_df["genre"].apply(lambda x: x.replace("genre_", ""))
 
-        acc = sum(predictions_df['ground_truth'] == predictions_df['genre'])/predictions_df.shape[0])*100
+        acc = sum(predictions_df['ground_truth'] == predictions_df['genre'].values)/(predictions_df.shape[0])*100
 
-        print(f"Model Accuracy : {(acc} % ")
+        print(f"Model Accuracy : {acc} % ")
 
         torch.cuda.empty_cache()
         try:
@@ -118,7 +119,7 @@ def inference(model, states, test_loader, device):
 
     else:
 
-        fn = args.audio_path
+        fn = args.test_path
 
         spec = audio_to_image(file_name=fn,\
         n_mels=CFG.n_mels,hop_length=CFG.hop_length,n_fft=CFG.n_fft,fmax=CFG.fmax,\
@@ -141,9 +142,9 @@ def inference(model, states, test_loader, device):
                 y_preds = model(spec)
             avg_preds.append(y_preds.softmax(1).to('cpu').numpy())
 
-        avg_preds = gmean(avg_preds, axis=0)
+        avg_preds  = gmean(avg_preds, axis=0)
 
-        avg_preds = np.squeeze(avg_preds)
+        avg_preds  = np.squeeze(avg_preds)
 
         pred_label = np.argmax(avg_preds, 1)
 
@@ -163,7 +164,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Inference Runner")
 
-    parser.add_argument("--test_csv", type = str,  default = './data/raw/test.csv', help = "path/to/test csv")
+    parser.add_argument("--test_path", type = str,  default = './data/raw/test.csv', help = "path/to/test csv/file")
     parser.add_argument("--root_dir" , type = str,    default = './data/spectrograms/', help = "path/to/spectrograms")
     parser.add_argument("--debug", action = "store_true", default=None, help = "run in debug mode")
     parser.add_argument("--sampling_rate", type =int, default=22050, help="sampling rate")

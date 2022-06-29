@@ -19,8 +19,9 @@ def create_folds(df, tgt, n_folds):
 
     df = df.sample(frac=1).reset_index(drop=True)
 
-    fold = StratifiedKFold(n_splits = n_folds, random_state=SEED_VAL,shuffle=True)
-    for i, (tr, vr) in enumerate(fold.split(df.index, df[tgt])):
+    kfold = StratifiedKFold(n_splits = n_folds, random_state=SEED_VAL,shuffle=True)
+
+    for i, (tr, vr) in enumerate(kfold.split(df.index, df[tgt])):
         df.loc[vr, 'fold'] = int(i)
 
     return df

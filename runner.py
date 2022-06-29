@@ -98,11 +98,6 @@ def train_loop(folds, fold, args):
 
     LOGGER.info(f"========== fold: {fold} training ==========")
 
-    if args.pse_udo:
-      folds = pd.read_csv(args.pse_udo_dir + "/pseudo_folds.csv")
-      trn_idx = folds[folds['fold'] != fold].index
-
-      valid_folds = pd.read_csv(args.pse_udo_dir + "/pseudo_test.csv")
 
     if  args.kfolds:
 
@@ -226,7 +221,7 @@ def main(args):
             LOGGER.info(f"========== fold: {fold} result ==========")
             get_result(_oof_df)
             
-    LOGGER.info(f"========== CV ==========")
+    LOGGER.info(f"========== CV Score ==========")
     get_result(oof_df)
     oof_df.to_csv(f'./outputs/{args.model_name}_{args.optimizer_name}_oof_df.csv', index=False)
 
@@ -262,8 +257,6 @@ if __name__ == "__main__":
     parser.add_argument("--gradient_accumulation_steps", type =int, default=1, help="grad accumulation steps")
     parser.add_argument("--max_grad_norm", type =int, default=1e3, help="max grad norm")
     parser.add_argument("--eta_min", type =float, default=1e-5, help="minimum eta")
-    parser.add_argument("--pse_udo", action = "store_true", default=False, help="use pseudo-labelled data flag")
-    parser.add_argument("--pse_udo_dir", type = str,    default =None, help = "pseudo labelled data directory")
     parser.add_argument("--target_size", type =int, default=10, help="number of music genres")
     parser.add_argument("--target_col", type =str, default="label", help="label column")
     parser.add_argument("--n_fold", type =int, default=20, help="number of folds")
