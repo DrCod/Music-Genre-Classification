@@ -197,11 +197,16 @@ def main(args):
 
     # format the spec path name
 
-    folds["spec_name"] = folds["spec_name"].apply(lambda x : x.replace("/content/Imgs/", args.root_dir))
+    # check if new train csv is uploaded
 
-    print(50*"*=")
-    print(folds.head(10))
-    print(50*"*=")
+    if "spec_name" in folds.columns:
+
+      # change spectrogram path to path pointing to the spectrogram directory
+      folds["spec_name"] = folds["spec_name"].apply(lambda x : x.replace("/content/Imgs/", args.root_dir))
+
+    else:
+      # create new column to store spec paths if new train csv is uploaded
+      folds["spec_name"] = folds["filename"].apply(lambda x : f"{args.root_dir}{x}")
 
 
     device = 'cuda' if torch.cuda.is_available() else 'cpu'

@@ -78,6 +78,7 @@ def inference(model, states, test_loader, device):
 
 
   def main(args):
+    
 
     pretrained_weights = {
     f"{args.model_name}" : [f'{args.trained_models}/{args.model_name}_fold{fold}_best.pth' for fold in args.use_folds] }
@@ -112,9 +113,9 @@ def inference(model, states, test_loader, device):
             del(states)
         except:
             pass
-        gc.collect()
+        _ = gc.collect()
 
-        return predictions_df, acc
+        return predictions_df
 
 
     else:
@@ -122,9 +123,9 @@ def inference(model, states, test_loader, device):
         fn = args.test_path
 
         spec = audio_to_image(file_name=fn,\
-        n_mels=CFG.n_mels,hop_length=CFG.hop_length,n_fft=CFG.n_fft,fmax=CFG.fmax,\
-        fmin=CFG.fmin,sampling_rate=CFG.sampling_rate, gain=CFG.gain, bias=CFG.bias,\
-         eps=CFG.eps,power=CFG.power, time_constant=CFG.time_constant,cst=30, top_db=80.)
+                n_mels=CFG.n_mels,hop_length=CFG.hop_length,n_fft=CFG.n_fft,fmax=CFG.fmax,\
+                fmin=CFG.fmin,sampling_rate=CFG.sampling_rate, gain=CFG.gain, bias=CFG.bias,\
+                eps=CFG.eps,power=CFG.power, time_constant=CFG.time_constant,cst=30, top_db=80.)
 
         spec = spec_to_image(spec)
 
@@ -150,15 +151,18 @@ def inference(model, states, test_loader, device):
 
         predicted_genre = mapper[pred_label]
 
+        print()
+        print(f"Predicted Genre : {predicted_genre}")
+        print()
+
         torch.cuda.empty_cache()
         try:
             del(model)
             del(states)
         except:
             pass
-        gc.collect()
+        _ = gc.collect()
 
-        return predicted_genre
 
 if __name__ == "__main__":
 
