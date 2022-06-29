@@ -79,10 +79,10 @@ def inference(model, states, test_loader, device):
 
   def main(args):
 
-    pretrained_models = {
+    pretrained_weights = {
     f"{args.model_name}" : [f'{args.trained_models}/{args.model_name}_fold{fold}_best.pth' for fold in args.use_folds] }
 
-    states = [torch.load(f) for f in pretrained_models[f"{args.model_name}"]]
+    states = [torch.load(f) for f in pretrained_weights[f"{args.model_name}"]]
 
     if args.batch_predict is not None:
 
@@ -166,6 +166,7 @@ if __name__ == "__main__":
 
     parser.add_argument("--test_path", type = str,  default = './data/raw/test.csv', help = "path/to/test csv/file")
     parser.add_argument("--root_dir" , type = str,    default = './data/spectrograms/', help = "path/to/spectrograms")
+    parser.add_argument("--trained_models", type=str, default='./outputs/', help="trained models directory")
     parser.add_argument("--debug", action = "store_true", default=None, help = "run in debug mode")
     parser.add_argument("--sampling_rate", type =int, default=22050, help="sampling rate")
     parser.add_argument("--num_workers", type =int, default=2, help="number of workers")
@@ -180,7 +181,6 @@ if __name__ == "__main__":
     parser.add_argument("--eps", type =float, default=1e-9, help="epsilon")
     parser.add_argument("--n_mels", type =int, default=92,help="n_mels")
     parser.add_argument("--n_fft", type =int, default=0, help="nfft")
-    parser.add_argument("--padmode", type =str, default="constant", help="padding mode")
     parser.add_argument("--samples", type =int, default=0, help="samples")
     parser.add_argument("--gain", type =float, default=0.6, help="gain")
     parser.add_argument("--bias", type =float, default=0.1, help="bias")

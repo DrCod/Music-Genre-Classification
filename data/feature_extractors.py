@@ -10,7 +10,7 @@ def audio_to_image_extractor(root_dir ,file_name,n_mels,hop_length,n_fft,fmax
     Convert audio to image
     '''
 
-    row_sound, sr = librosa.load(f"{root_dir}{file_name}",sr= sampling_rate)
+    row_sound, sr = librosa.load(f"{root_dir}/{file_name}",sr= sampling_rate)
     sound = np.zeros((cst*sr,))
 
     if row_sound.shape[0] < cst*sr:
