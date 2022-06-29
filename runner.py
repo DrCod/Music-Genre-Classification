@@ -266,8 +266,8 @@ if __name__ == "__main__":
     parser.add_argument("--target_col", type =str, default="label", help="label column")
     parser.add_argument("--n_fold", type =int, default=20, help="number of folds")
     parser.add_argument("--kfolds", action = "store_true", default=False, help="use kfolds")
-    parser.add_argument("--use_folds", nargs = "+", type = int, default=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19], help="list folds")
-    parser.add_argument("--seed", type =int, default=42, help="set seed value")
+    parser.add_argument("--use_folds", nargs = "+", type = int, default=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19], help="list all folds to cross validate model on")
+    parser.add_argument("--seed", type =int, default=42, help="set random seed value")
 
     args = parser.parse_args()
 
