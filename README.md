@@ -12,3 +12,5 @@
 
   python inference.py --root_dir path/to/your_generated_spectrograms --test_path path/to/your_audio_csv --model_name densenet201 --family Densenet201 --batch_size 16 --pretrained_models ./outputs/
   
+ 
+# Pretrained weights can be accessed [here](https://drive.google.com/file/d/1-HxKatiuRyHGkIjOGm-KlaZcRoP4MIfv/view?usp=sharing)
