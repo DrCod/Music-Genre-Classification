@@ -6,7 +6,6 @@ import joblib
 import numpy as np
 
 
-mapper = joblib.load(f"./data/label_mapper.joblib")
 
 
 class AudioDataset(Dataset):
@@ -15,6 +14,7 @@ class AudioDataset(Dataset):
     self.df = df
     self.task = task
     self.size = size
+    mapper  = joblib.load(f"./data/label_mapper.joblib")
     self.c = len(mapper)
     self.classes = list(mapper.values())
 
@@ -22,6 +22,7 @@ class AudioDataset(Dataset):
     return len(self.df)
 
   def __getitem__(self, idx):
+
     fn = self.df.loc[idx, 'spec_name']
 
     spec = cv2.imread(fn, cv2.IMREAD_GRAYSCALE)
@@ -32,6 +33,6 @@ class AudioDataset(Dataset):
     }
 
     if self.task=='train':
-      output.update({'label': torch.tensor(np.argmax(self.df.iloc[idx,4:-1].values)) })
+      output.update({'label': torch.tensor(np.argmax(self.df.iloc[idx,3:-1].values)) })
 
     return output

@@ -127,9 +127,11 @@ def inference(model, states, test_loader, device):
                 fmin=CFG.fmin,sampling_rate=CFG.sampling_rate, gain=CFG.gain, bias=CFG.bias,\
                 eps=CFG.eps,power=CFG.power, time_constant=CFG.time_constant,cst=30, top_db=80.)
 
+        # transform the spectrogram to image
         spec = spec_to_image(spec)
 
-        spec = cv2.resize(spec, self.size)
+        # resize spectrogram
+        spec = cv2.resize(spec, args.size)
 
         spec = torch.tensor(spec, dtype=torch.float).unsqueeze(0)
 
