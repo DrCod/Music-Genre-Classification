@@ -74,7 +74,9 @@ def timeSince(since, percent):
     return '%s (remain %s)' % (asMinutes(s), asMinutes(rs))
 
 
-def train_fn(train_loader, model, criterion, optimizer, epoch, scheduler, device):
+def train_fn(train_loader, model, criterion, optimizer, epoch, scheduler, device, args):
+
+
     batch_time = AverageMeter()
     data_time = AverageMeter()
     losses = AverageMeter()
@@ -91,20 +93,20 @@ def train_fn(train_loader, model, criterion, optimizer, epoch, scheduler, device
         y_preds = model(images)
         loss = criterion(y_preds, labels ) 
         losses.update(loss.item(), batch_size)
-        if CFG.gradient_accumulation_steps > 1:
-            loss = loss / CFG.gradient_accumulation_steps
+        if args.gradient_accumulation_steps > 1:
+            loss = loss / args.gradient_accumulation_steps
         else:
             loss.backward()
 
 
-        grad_norm = torch.nn.utils.clip_grad_norm_(model.parameters(), CFG.max_grad_norm)
-        if (step + 1) % CFG.gradient_accumulation_steps == 0:
+        grad_norm = torch.nn.utils.clip_grad_norm_(model.parameters(), args.max_grad_norm)
+        if (step + 1) % args.gradient_accumulation_steps == 0:
             optimizer.step()
             optimizer.zero_grad()
             global_step += 1
         batch_time.update(time.time() - end)
         end = time.time()
-        if step % CFG.print_freq == 0 or step == (len(train_loader)-1):
+        if step % args.print_freq == 0 or step == (len(train_loader)-1):
             print('Epoch: [{0}][{1}/{2}] '
                   'Data {data_time.val:.3f} ({data_time.avg:.3f}) '
                   'Elapsed {remain:s} '
@@ -118,7 +120,7 @@ def train_fn(train_loader, model, criterion, optimizer, epoch, scheduler, device
                    ))
     return losses.avg
 
-def valid_fn(valid_loader, model, criterion, device):
+def valid_fn(valid_loader, model, criterion, device, args):
     batch_time = AverageMeter()
     data_time = AverageMeter()
     losses = AverageMeter()
@@ -136,11 +138,11 @@ def valid_fn(valid_loader, model, criterion, device):
         loss = criterion(y_preds, labels)
         losses.update(loss.item(), batch_size)
         preds.append(y_preds.softmax(1).to('cpu').numpy())
-        if CFG.gradient_accumulation_steps > 1:
-            loss = loss / CFG.gradient_accumulation_steps
+        if args.gradient_accumulation_steps > 1:
+            loss = loss / args.gradient_accumulation_steps
         batch_time.update(time.time() - end)
         end = time.time()
-        if step % CFG.print_freq == 0 or step == (len(valid_loader)-1):
+        if step % args.print_freq == 0 or step == (len(valid_loader)-1):
             print('EVAL: [{0}/{1}] '
                   'Data {data_time.val:.3f} ({data_time.avg:.3f}) '
                   'Elapsed {remain:s} '

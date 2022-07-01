@@ -160,9 +160,10 @@ def train_loop(folds, fold, args):
     best_loss = np.inf
     
     for epoch in range(args.epochs):
+
         start_time = time.time()
-        avg_loss = train_fn(train_loader, model, criterion, optimizer, epoch, scheduler, device)
-        avg_val_loss, preds = valid_fn(valid_loader, model, criterion, device)
+        avg_loss = train_fn(train_loader, model, criterion, optimizer, epoch, scheduler, device, args)
+        avg_val_loss, preds = valid_fn(valid_loader, model, criterion, device, args)
         valid_labels = valid_folds[args.target_col].values
 
         es(avg_val_loss, model)
